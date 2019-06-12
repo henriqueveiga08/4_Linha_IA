@@ -9,7 +9,7 @@
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
     integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-
+  <script src="js.js"></script>
   <title>4 em Linha</title>
 </head>
 
@@ -19,78 +19,79 @@
   </header>
 
   <div class="container-fluid">
-    <div class="row">
-      <div class="lados col-3">
+      <div class="row" id="tabuleiroJogo">
+        <div class="lados col-3">
+          <a href="javascript:newPopup()">Abrir popup</a>
+        </div>
+        <div class="col-md-6 col-sm">
+          <section>
+            <div class="row">
+              <button class="botaoInicial" id="button0" onclick="clicou()" disabled></button>
+              <button class="botaoInicial" id="button1" onclick="clicou()" disabled></button>
+              <button class="botaoInicial" id="button2" onclick="clicou()" disabled></button>
+              <button class="botaoInicial" id="button3" onclick="clicou()" disabled></button>
+              <button class="botaoInicial" id="button4" onclick="clicou()" disabled></button>
+              <button class="botaoInicial" id="button5" onclick="clicou()" disabled></button>
+              <button class="botaoInicial" id="button6" onclick="clicou()" disabled></button>
+            </div>
+            <div class="row">
+              <button class="botaoInicial" id="button7" onclick="clicou()" disabled></button>
+              <button class="botaoInicial" id="button8" onclick="clicou()" disabled></button>
+              <button class="botaoInicial" id="button9" onclick="clicou()" disabled></button>
+              <button class="botaoInicial" id="button10" onclick="clicou()" disabled></button>
+              <button class="botaoInicial" id="button11" onclick="clicou()" disabled></button>
+              <button class="botaoInicial" id="button12" onclick="clicou()" disabled></button>
+              <button class="botaoInicial" id="button13" onclick="clicou()" disabled></button>
+            </div>
+            <div class="row">
+              <button class="botaoInicial" id="button14" onclick="clicou()" disabled></button>
+              <button class="botaoInicial" id="button15" onclick="clicou()" disabled></button>
+              <button class="botaoInicial" id="button16" onclick="clicou()" disabled></button>
+              <button class="botaoInicial" id="button17" onclick="clicou()" disabled></button>
+              <button class="botaoInicial" id="button18" onclick="clicou()" disabled></button>
+              <button class="botaoInicial" id="button19" onclick="clicou()" disabled></button>
+              <button class="botaoInicial" id="button20" onclick="clicou()" disabled></button>
+            </div>
+            <div class="row">
+              <button class="botaoInicial" id="button21" onclick="clicou()" disabled></button>
+              <button class="botaoInicial" id="button22" onclick="clicou()" disabled></button>
+              <button class="botaoInicial" id="button23" onclick="clicou()" disabled></button>
+              <button class="botaoInicial" id="button24" onclick="clicou()" disabled></button>
+              <button class="botaoInicial" id="button25" onclick="clicou()" disabled></button>
+              <button class="botaoInicial" id="button26" onclick="clicou()" disabled></button>
+              <button class="botaoInicial" id="button27" onclick="clicou()" disabled></button>
+            </div>
+            <div class="row">
+              <button class="botaoInicial" id="button28" onclick="clicou()" disabled></button>
+              <button class="botaoInicial" id="button29" onclick="clicou()" disabled></button>
+              <button class="botaoInicial" id="button30" onclick="clicou()" disabled></button>
+              <button class="botaoInicial" id="button31" onclick="clicou()" disabled></button>
+              <button class="botaoInicial" id="button32" onclick="clicou()" disabled></button>
+              <button class="botaoInicial" id="button33" onclick="clicou()" disabled></button>
+              <button class="botaoInicial" id="button34" onclick="clicou()" disabled></button>
+            </div>
+            <div class="row">
+              <button class="botaoInicial" id="button35" onclick="clicou(35)"></button>
+              <button class="botaoInicial" id="button36" onclick="clicou(36)"></button>
+              <button class="botaoInicial" id="button37" onclick="clicou(37)"></button>
+              <button class="botaoInicial" id="button38" onclick="clicou(38)"></button>
+              <button class="botaoInicial" id="button39" onclick="clicou(39)"></button>
+              <button class="botaoInicial" id="button40" onclick="clicou(40)"></button>
+              <button class="botaoInicial" id="button41" onclick="clicou(41)"></button>
+            </div>
+          </section>
+        </div>
+        <div class="lados col-3">
 
+        </div>
       </div>
-      <div class="col-6">
-        <section>
-          <div class="row">
-            <button class="botaoInicial" id="button0" disabled></button>
-            <button class="botaoInicial" id="button1"></button>
-            <button class="botaoInicial" id="button2"></button>
-            <button class="botaoInicial" id="button3"></button>
-            <button class="botaoInicial" id="button4"></button>
-            <button class="botaoInicial" id="button5"></button>
-            <button class="botaoInicial" id="button6"></button>
-          </div>
-          <div class="row">
-            <button class="botaoInicial" id="button7"></button>
-            <button class="botaoInicial" id="button8"></button>
-            <button class="botaoInicial" id="button9"></button>
-            <button class="botaoInicial" id="button10"></button>
-            <button class="botaoInicial" id="button11"></button>
-            <button class="botaoInicial" id="button12"></button>
-            <button class="botaoInicial" id="button13"></button>
-          </div>
-          <div class="row">
-            <button class="botaoInicial" id="button14"></button>
-            <button class="botaoInicial" id="button15"></button>
-            <button class="botaoInicial" id="button16"></button>
-            <button class="botaoInicial" id="button17"></button>
-            <button class="botaoInicial" id="button18"></button>
-            <button class="botaoInicial" id="button19"></button>
-            <button class="botaoInicial" id="button20"></button>
-          </div>
-          <div class="row">
-            <button class="botaoInicial" id="button21"></button>
-            <button class="botaoInicial" id="button22"></button>
-            <button class="botaoInicial" id="button23"></button>
-            <button class="botaoInicial" id="button24"></button>
-            <button class="botaoInicial" id="button25"></button>
-            <button class="botaoInicial" id="button26"></button>
-            <button class="botaoInicial" id="button27"></button>
-          </div>
-          <div class="row">
-            <button class="botaoInicial" id="button28"></button>
-            <button class="botaoInicial" id="button29"></button>
-            <button class="botaoInicial" id="button30"></button>
-            <button class="botaoInicial" id="button31"></button>
-            <button class="botaoInicial" id="button32"></button>
-            <button class="botaoInicial" id="button33"></button>
-            <button class="botaoInicial" id="button34"></button>
-          </div>
-          <div class="row">
-            <button class="botaoInicial" id="button35"></button>
-            <button class="botaoInicial" id="button36"></button>
-            <button class="botaoInicial" id="button37"></button>
-            <button class="botaoInicial" id="button38"></button>
-            <button class="botaoInicial" id="button39"></button>
-            <button class="botaoInicial" id="button40"></button>
-            <button class="botaoInicial" id="button41"></button>
-          </div>
-        </section>
-      </div>
-      <div class="lados col-3">
 
-      </div>
-    </div>
-
-
+    
   </div>
 
   <footer>
-    &copy;Grupo 2
+    (Pablo Martins, Waislan Sanchez, Henrique Veiga, Marcos Paulo, WIllian Moreira)<br>
+    &copy;Grupo 2 
   </footer>
 
   <!-- Optional JavaScript -->

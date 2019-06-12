@@ -1,6 +1,8 @@
 footer{
     text-align: center;
     color:black;
+    margin-bottom: 10px;
+    margin-top: 30px;
 }
 
 section{
@@ -8,7 +10,7 @@ section{
     border-radius: 10px;
     padding: 15px;
     width: 100%;
-    height: 500px;
+    height: 100%;
     margin: auto;
     box-shadow: 5px 5px 10px black;
     margin-bottom: 10px;
@@ -23,7 +25,7 @@ header{
 }
 
 body{
-    background-color: rgb(49, 231, 73);
+    text-align: center;
 }
 
 div.lados{
@@ -37,4 +39,25 @@ button.botaoInicial{
     border: none;
     margin-left: 11px;
     margin-top: 3px;
+}
+
+div.dificuldade{
+    text-align: center;
+    color: aliceblue; 
+    background: rgb(46, 126, 223);
+    font-size: 40pt;
+    width: 100%;
+    height: 100%;
+}
+
+button.popup{
+    border-radius: 10px;
+    margin-left: 10px;
+    margin-top: 10px;
+}
+
+div.tampao{
+    display: block;
+    width:100%; 
+    height:100%
 }
