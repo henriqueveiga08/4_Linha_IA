@@ -9,8 +9,23 @@ function clicou(x){
     var botao = String(x)
     var stringElemento = String("button" + botao)
     var botaoClicado = document.getElementById(stringElemento)
-    //window.alert(`botao clicado foi ${stringElemento}`)
-    botaoClicado.style.background = "url('/img/amarelo.png')"
+    window.alert(`botao clicado foi ${stringElemento}`)
+    botaoClicado.style.background = "url('/img/vermelho.png')"
+    botaoClicado.disabled=true; 
+}
+
+function mouseCima(x){
+    var botao = String(x)
+    var stringElemento = String("button" + botao)
+    var botaoClicado = document.getElementById(stringElemento)
+    botaoClicado.style.background = "url('/img/jogada.png')"
+}
+
+function mouseSai(x){
+    var botao = String(x)
+    var stringElemento = String("button" + botao)
+    var botaoClicado = document.getElementById(stringElemento)
+    botaoClicado.style.background = "url('/img/vazio.png')"
 }
 
 
