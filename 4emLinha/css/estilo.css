@@ -28,12 +28,9 @@ body{
     text-align: center;
 }
 
-div.lados{
-    
-} 
 
 button.botaoInicial{
-    background: url("/img/vazio.png");
+    background: url("/4emLinha/img/vazio.png");
     height: 76px;
     width: 80px;
     border: none;
