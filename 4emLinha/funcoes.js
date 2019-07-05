@@ -67,7 +67,7 @@ function clicou(x) {
     botaoClicado.style.background = "url('img/vermelho.png')"
     botaoClicado.disabled = true; //Desabilita o botao que o jogador clicou
     atualizaTabuleiro(estadoAtual, estadoAtual, botao, estadoAtual.jogadorAtual); //Atualiza a matriz com o valor jogado
-    var r = verificaVitoria(estadoAtual);
+    var r = verificaVitoria(estadoAtual, estadoAtual.jogadorAtual);
     console.log(`o valor de JOG foi = ${r}`)
     if (r == 1 || r == -1) {
         finalizarJogo(r);
@@ -122,30 +122,39 @@ function atualizaTabuleiro(state, pai, botao, jogador) {
 function escolherJogada(state) {
     state.nivel = 0;
     gerarArvore(state, dific, state.jogadorAtual);
-    var jogada;
-    jogada = state.filhos.pop();
-
+    var jogada = state.filhos[0];
+    var js = []
+    for(var i=0; i<state.filhos.length;i++){
+        console.log("FILHOS E MIN MAX")
+        console.log(state.filhos[i].minMax)
+    }
     //console.log("JOGADA")
     //console.log(jogada)
 
     state.filhos.forEach(element => {
         if (element.minMax > jogada.minMax) {
-            jogada = element;
+            js = []
+            js.push(element)
+        } else if (element.minMax == jogada.minMax) {
+            js.push(element)
         }
     });
-    
+
+    var posicao = Math.floor(Math.random() * js.length)
+    jogada = js[posicao];
     //console.log("essa foi a jogada")
     //console.log(jogada)
     while (jogada.filhos.length > 0) {
         jogada.filhos.pop();
     }
     state = jogada;
-
+    console.log("MINIMAX DESSE STADO É")
+    console.log(state.minMax)
     //console.log("jogador Atual é")
     //console.log(state.jogadorAtual)
     atualizaTabuleiro(state, state, state.jogadaFeitaNoEstado, state.jogadorAtual)
     atualizaInterface(state);
-    var x = verificaVitoria(state);
+    var x = verificaVitoria(state.jogadorAtual);
     console.log(`o valor de IA foi = ${x}`)
     if (x == 1 || x == -1) {
         finalizarJogo(x);
@@ -162,7 +171,7 @@ function gerarArvore(state, nivelDificuldade, jogadorAtual) {
 
     if (state.nivel == nivelDificuldade) {
         // Chegou até o último nível possível
-        state.minMax = calcularMinMax(state);
+        state.minMax = Number(calcularMinMax(state));
         return state.minMax
     }
 
@@ -182,17 +191,18 @@ function gerarArvore(state, nivelDificuldade, jogadorAtual) {
         //state.filhos = filhos
     } else {
         // Não tem mais posições jogáveis, chegou na folha da árvore
-        state.minMax = calcularMinMax(state);
+        state.minMax = Number(calcularMinMax(state));
         return state.minMax
     }
-/*
-    if (state.max) {
-        state.minMax = -64;
-    } else {
-        state.minMax = 64;
-    }*/
+    /*
+        if (state.max) {
+            state.minMax = -64;
+        } else {
+            state.minMax = 64;
+        }*/
 
     state.filhos.forEach(element => {
+        
         // Gera a árvore para cada estado filho do estado atual
         gerarArvore(element, nivelDificuldade, jogadorAtual);
         if (state.max) {
@@ -204,9 +214,11 @@ function gerarArvore(state, nivelDificuldade, jogadorAtual) {
                 state.minMax = element.getMinmax;
             }
         }
+        console.log("ESTA DENTRO DE GERAR ARVORE, MINIMAX=")
+        console.log(element.minMax)
     });
 
-    state.minMax = calcularMinMax(state);
+    state.minMax = Number(calcularMinMax(state));
     return state.minMax
 }
 
@@ -239,7 +251,7 @@ function habilitaBotoes(state) {
 }
 
 
-function verificaVitoria(state) {
+function verificaVitoria(state, jogador) {
     posicaoJogada = state.jogadaFeitaNoEstado;
     x = Number(posicaoJogada);
     linha = Number(x / 7) | 0;
@@ -249,156 +261,214 @@ function verificaVitoria(state) {
     var countJOG = Number(0)
     var countIA = Number(0)
 
-    ///////////////varrendo noroeste/////////////
-    i = linha;
-    j = coluna;
-    countJOG = 0;
-    countIA = 0;
-    while (i > 0 && j > 0) {
-        if (state.tabuleiro[i][j] == 1 && state.tabuleiro[i - 1][j - 1] == 1) {
-            countIA++;
+
+    if (jogador == 1) {
+        ///////////////varrendo noroeste//////////////////////////varrendo sudeste//////////////////
+        i = linha;
+        j = coluna;
+        countIA = 0;
+        while (i > 0 && j > 0) {
+            if (state.tabuleiro[i][j] == 1 && state.tabuleiro[i - 1][j - 1] == 1) {
+                countIA++;
+            } else {
+                i = 0;
+            }
+            i--;
+            j--;
         }
-        if (state.tabuleiro[i][j] == -1 && state.tabuleiro[i - 1][j - 1] == -1) {
-            countJOG++;
+        i = linha;
+        j = coluna;
+        while (i < 5 && j < 6) {
+            if (state.tabuleiro[i][j] == 1 && state.tabuleiro[i + 1][j + 1] == 1) {
+                countIA++;
+            } else {
+                i = 5;
+            }
+            i++;
+            j++;
         }
-        i--;
-        j--;
-    }
-    if (countJOG == 3) {
-        return -1;
-    }
-    if (countIA == 3) {
-        return 1;
+        if (countIA == 3) {
+            return 1;
+        }
+
+
+        /////////////////varrendo oeste/////////////////////varrendo leste//////////////////
+        i = linha;
+        j = coluna;
+        countIA = 0;
+        while (j > 0) {
+            if (state.tabuleiro[i][j] == 1 && state.tabuleiro[i][j - 1] == 1) {
+                countIA++;
+            } else {
+                j = 0;
+            }
+            j--;
+        }
+        i = linha;
+        j = coluna;
+        while (j < 6) {
+            if (state.tabuleiro[i][j] == 1 && state.tabuleiro[i][j + 1] == 1) {
+                countIA++;
+            } else {
+                j = 6;
+            }
+
+            j++;
+        }
+        if (countIA == 3) {
+            return 1;
+        }
+
+
+        ///////////////////varrendo nordeste////////////////////////varrendo sudoeste//////////////////
+        i = linha;
+        j = coluna;
+        countIA = 0;
+        while (i > 0 && j < 6) {
+            if (state.tabuleiro[i][j] == 1 && state.tabuleiro[i - 1][j + 1] == 1) {
+                countIA++;
+            } else {
+                i = 0;
+            }
+            i--;
+            j++;
+        }
+        i = linha;
+        j = coluna;
+        while (i < 5 && j > 0) {
+            if (state.tabuleiro[i][j] == 1 && state.tabuleiro[i + 1][j - 1] == 1) {
+                countIA++;
+            } else {
+                i = 5;
+            }
+            i++;
+            j--;
+        }
+        if (countIA == 3) {
+            return 1;
+        }
+
+        ///////////////////varrendo sul//////////////////
+        i = linha;
+        j = coluna;
+        countIA = 0;
+        while (i < 5) {
+            if (state.tabuleiro[i][j] == 1 && state.tabuleiro[i + 1][j] == 1) {
+                countIA++;
+            } else {
+                i = 5;
+            }
+            i++;
+        }
+        if (countIA == 3) {
+            return 1;
+        }
     }
 
-    /////////////////varrendo oeste//////////////////////
-    i = linha;
-    j = coluna;
-    countJOG = 0;
-    countIA = 0;
-    while (j > 0) {
-        if (state.tabuleiro[i][j] == 1 && state.tabuleiro[i][j - 1] == 1) {
-            countIA++;
+
+    if (jogador == -1) {
+        ///////////////varrendo noroeste//////////////////////////varrendo sudeste//////////////////
+        i = linha;
+        j = coluna;
+        countJOG = 0;
+        while (i > 0 && j > 0) {
+            if (state.tabuleiro[i][j] == -1 && state.tabuleiro[i - 1][j - 1] == -1) {
+                countJOG++;
+            } else {
+                i = 0;
+            }
+            i--;
+            j--;
         }
-        if (state.tabuleiro[i][j] == -1 && state.tabuleiro[i][j - 1] == -1) {
-            countJOG++;
+        i = linha;
+        j = coluna;
+        while (i < 5 && j < 6) {
+            if (state.tabuleiro[i][j] == -1 && state.tabuleiro[i + 1][j + 1] == -1) {
+                countJOG++;
+            } else {
+                i = 5;
+            }
+            i++;
+            j++;
         }
-        j--;
-    }
-    if (countJOG == 3) {
-        return -1;
-    }
-    if (countIA == 3) {
-        return 1;
+        if (countJOG == 3) {
+            return -1;
+        }
+
+
+        /////////////////varrendo oeste/////////////////////varrendo leste//////////////////
+        i = linha;
+        j = coluna;
+        countJOG = 0;
+        while (j > 0) {
+            if (state.tabuleiro[i][j] == -1 && state.tabuleiro[i][j - 1] == -1) {
+                countJOG++;
+            } else {
+                j = 0;
+            }
+            j--;
+        }
+        i = linha;
+        j = coluna;
+        while (j < 6) {
+            if (state.tabuleiro[i][j] == -1 && state.tabuleiro[i][j + 1] == -1) {
+                countJOG++;
+            } else {
+                j = 6;
+            }
+            j++;
+        }
+        if (countJOG == 3) {
+            return -1;
+        }
+
+
+        ///////////////////varrendo nordeste////////////////////////varrendo sudoeste//////////////////
+        i = linha;
+        j = coluna;
+        countJOG = 0;
+        while (i > 0 && j < 6) {
+            if (state.tabuleiro[i][j] == -1 && state.tabuleiro[i - 1][j + 1] == -1) {
+                countJOG++;
+            } else {
+                i = 0;
+            }
+            i--;
+            j++;
+        }
+        i = linha;
+        j = coluna;
+        while (i < 5 && j > 0) {
+            if (state.tabuleiro[i][j] == -1 && state.tabuleiro[i + 1][j - 1] == -1) {
+                countJOG++;
+            } else {
+                i = 5;
+            }
+            i++;
+            j--;
+        }
+        if (countJOG == 3) {
+            return -1;
+        }
+
+
+        ///////////////////varrendo sul//////////////////
+        i = linha;
+        j = coluna;
+        countJOG = 0;
+        while (i < 5) {
+            if (state.tabuleiro[i][j] == -1 && state.tabuleiro[i + 1][j] == -1) {
+                countJOG++;
+            } else {
+                i = 5;
+            }
+            i++;
+        }
+        if (countJOG == 3) {
+            return -1;
+        }
     }
 
-    /////////////varrendo sudoeste//////////////////
-    i = linha;
-    j = coluna;
-    countJOG = 0;
-    countIA = 0;
-    while (i < 5 && j > 0) {
-        if (state.tabuleiro[i][j] == 1 && state.tabuleiro[i + 1][j - 1] == 1) {
-            countIA++;
-        }
-        if (state.tabuleiro[i][j] == -1 && state.tabuleiro[i + 1][j - 1] == -1) {
-            countJOG++;
-        }
-        i++;
-        j--;
-    }
-    if (countJOG == 3) {
-        return -1;
-    }
-    if (countIA == 3) {
-        return 1;
-    }
-
-    ///////////////////varrendo sul//////////////////
-    i = linha;
-    j = coluna;
-    countJOG = 0;
-    countIA = 0;
-    while (i < 5) {
-        if (state.tabuleiro[i][j] == 1 && state.tabuleiro[i + 1][j] == 1) {
-            countIA++;
-        }
-        if (state.tabuleiro[i][j] == -1 && state.tabuleiro[i + 1][j] == -1) {
-            countJOG++;
-        }
-        i++;
-    }
-    if (countJOG == 3) {
-        return -1;
-    }
-    if (countIA == 3) {
-        return 1;
-    }
-
-    ///////////////////varrendo sudeste//////////////////
-    i = linha;
-    j = coluna;
-    countJOG = 0;
-    countIA = 0;
-    while (i < 5 && j < 6) {
-        if (state.tabuleiro[i][j] == 1 && state.tabuleiro[i + 1][j + 1] == 1) {
-            countIA++;
-        }
-        if (state.tabuleiro[i][j] == -1 && state.tabuleiro[i + 1][j + 1] == -1) {
-            countJOG++;
-        }
-        i++;
-        j++;
-    }
-    if (countJOG == 3) {
-        return -1;
-    }
-    if (countIA == 3) {
-        return 1;
-    }
-
-    ///////////////////varrendo leste//////////////////
-    i = linha;
-    j = coluna;
-    countJOG = 0;
-    countIA = 0;
-    while (j < 6) {
-        if (state.tabuleiro[i][j] == 1 && state.tabuleiro[i][j + 1] == 1) {
-            countIA++;
-        }
-        if (state.tabuleiro[i][j] == -1 && state.tabuleiro[i][j + 1] == -1) {
-            countJOG++;
-        }
-        j++;
-    }
-    if (countJOG == 3) {
-        return -1;
-    }
-    if (countIA == 3) {
-        return 1;
-    }
-
-    ///////////////////varrendo nordeste//////////////////
-    i = linha;
-    j = coluna;
-    countJOG = 0;
-    countIA = 0;
-    while (i > 0 && j < 6) {
-        if (state.tabuleiro[i][j] == 1 && state.tabuleiro[i - 1][j + 1] == 1) {
-            countIA++;
-        }
-        if (state.tabuleiro[i][j] == -1 && state.tabuleiro[i - 1][j + 1] == -1) {
-            countJOG++;
-        }
-        i--;
-        j++;
-    }
-    if (countJOG == 3) {
-        return -1;
-    }
-    if (countIA == 3) {
-        return 1;
-    }
 
     return 0;
 
@@ -416,180 +486,231 @@ function calcularMinMax(state) {
     var countIA = Number(0)
     var maiorIA = Number(0)
     var maiorJOG = Number(0)
-    ///////////////varrendo noroeste/////////////
-    i = linha;
-    j = coluna;
-    countJOG = 0;
-    countIA = 0;
-    while (i > 0 && j > 0) {
-        if (state.tabuleiro[i][j] == 1 && state.tabuleiro[i - 1][j - 1] == 1) {
-            countIA++;
-        }else{
-            countJOG++;
+    var jogador = state.jogadorAtual
+    if (jogador == 1) {
+        ///////////////varrendo noroeste//////////////////////////varrendo sudeste//////////////////
+        i = linha;
+        j = coluna;
+        countIA = 0;
+        while (i > 0 && j > 0) {
+            if (state.tabuleiro[i][j] == 1 && state.tabuleiro[i - 1][j - 1] == 1) {
+                countIA++;
+            } else {
+                i = 0;
+            }
+            i--;
+            j--;
         }
-        if (state.tabuleiro[i][j] == -1 && state.tabuleiro[i - 1][j - 1] == -1) {
-            countJOG++;
+        i = linha;
+        j = coluna;
+        while (i < 5 && j < 6) {
+            if (state.tabuleiro[i][j] == 1 && state.tabuleiro[i + 1][j + 1] == 1) {
+                countIA++;
+            } else {
+                i = 5;
+            }
+            i++;
+            j++;
         }
-        i--;
-        j--;
-    }
-    if (countJOG > maiorJOG) {
-        maiorJOG = countJOG;
-    }
-    if (countIA > maiorIA) {
-        maiorIA = countIA;
+        if (countIA > maiorIA) {
+            maiorIA = countIA;
+        }
+
+
+        /////////////////varrendo oeste/////////////////////varrendo leste//////////////////
+        i = linha;
+        j = coluna;
+        countIA = 0;
+        while (j > 0) {
+            if (state.tabuleiro[i][j] == 1 && state.tabuleiro[i][j - 1] == 1) {
+                countIA++;
+            } else {
+                j = 0;
+            }
+            j--;
+        }
+        i = linha;
+        j = coluna;
+        while (j < 6) {
+            if (state.tabuleiro[i][j] == 1 && state.tabuleiro[i][j + 1] == 1) {
+                countIA++;
+            } else {
+                j = 6;
+            }
+
+            j++;
+        }
+        if (countIA > maiorIA) {
+            maiorIA = countIA;
+        }
+
+
+        ///////////////////varrendo nordeste////////////////////////varrendo sudoeste//////////////////
+        i = linha;
+        j = coluna;
+        countIA = 0;
+        while (i > 0 && j < 6) {
+            if (state.tabuleiro[i][j] == 1 && state.tabuleiro[i - 1][j + 1] == 1) {
+                countIA++;
+            } else {
+                i = 0;
+            }
+            i--;
+            j++;
+        }
+        i = linha;
+        j = coluna;
+        while (i < 5 && j > 0) {
+            if (state.tabuleiro[i][j] == 1 && state.tabuleiro[i + 1][j - 1] == 1) {
+                countIA++;
+            } else {
+                i = 5;
+            }
+            i++;
+            j--;
+        }
+        if (countIA > maiorIA) {
+            maiorIA = countIA;
+        }
+
+        ///////////////////varrendo sul//////////////////
+        i = linha;
+        j = coluna;
+        countIA = 0;
+        while (i < 5) {
+            if (state.tabuleiro[i][j] == 1 && state.tabuleiro[i + 1][j] == -1) {
+                countIA++;
+            } else {
+                i = 5;
+            }
+            i++;
+        }
+        if (countIA > maiorIA) {
+            maiorIA = countIA;
+        }
     }
 
-    /////////////////varrendo oeste//////////////////////
-    i = linha;
-    j = coluna;
-    countJOG = 0;
-    countIA = 0;
-    while (j > 0) {
-        if (state.tabuleiro[i][j] == 1 && state.tabuleiro[i][j - 1] == 1) {
-            countIA++;
-        }else{
-            countJOG++;
+
+    if (jogador == -1) {
+        ///////////////varrendo noroeste//////////////////////////varrendo sudeste//////////////////
+        i = linha;
+        j = coluna;
+        countJOG = 0;
+        while (i > 0 && j > 0) {
+            if (state.tabuleiro[i][j] == -1 && state.tabuleiro[i - 1][j - 1] == -1) {
+                countJOG++;
+            } else {
+                i = 0;
+            }
+            i--;
+            j--;
         }
-        if (state.tabuleiro[i][j] == -1 && state.tabuleiro[i][j - 1] == -1) {
-            countJOG++;
+        i = linha;
+        j = coluna;
+        while (i < 5 && j < 6) {
+            if (state.tabuleiro[i][j] == -1 && state.tabuleiro[i + 1][j + 1] == -1) {
+                countJOG++;
+            } else {
+                i = 5;
+            }
+            i++;
+            j++;
         }
-        j--;
-    }
-    if (countJOG > maiorJOG) {
-        maiorJOG = countJOG;
-    }
-    if (countIA > maiorIA) {
-        maiorIA = countIA;
+        if (countJOG > maiorJOG) {
+            maiorJOG = countJOG;
+        }
+
+
+        /////////////////varrendo oeste/////////////////////varrendo leste//////////////////
+        i = linha;
+        j = coluna;
+        countJOG = 0;
+        while (j > 0) {
+            if (state.tabuleiro[i][j] == -1 && state.tabuleiro[i][j - 1] == -1) {
+                countJOG++;
+            } else {
+                j = 0;
+            }
+            j--;
+        }
+        i = linha;
+        j = coluna;
+        while (j < 6) {
+            if (state.tabuleiro[i][j] == -1 && state.tabuleiro[i][j + 1] == -1) {
+                countJOG++;
+            } else {
+                j = 6;
+            }
+            j++;
+        }
+        if (countJOG > maiorJOG) {
+            maiorJOG = countJOG;
+        }
+
+
+        ///////////////////varrendo nordeste////////////////////////varrendo sudoeste//////////////////
+        i = linha;
+        j = coluna;
+        countJOG = 0;
+        while (i > 0 && j < 6) {
+            if (state.tabuleiro[i][j] == -1 && state.tabuleiro[i - 1][j + 1] == -1) {
+                countJOG++;
+            } else {
+                i = 0;
+            }
+            i--;
+            j++;
+        }
+        i = linha;
+        j = coluna;
+        while (i < 5 && j > 0) {
+            if (state.tabuleiro[i][j] == -1 && state.tabuleiro[i + 1][j - 1] == -1) {
+                countJOG++;
+            } else {
+                i = 5;
+            }
+            i++;
+            j--;
+        }
+        if (countJOG > maiorJOG) {
+            maiorJOG = countJOG;
+        }
+
+
+        ///////////////////varrendo sul//////////////////
+        i = linha;
+        j = coluna;
+        countJOG = 0;
+        while (i < 5) {
+            if (state.tabuleiro[i][j] == -1 && state.tabuleiro[i + 1][j] == -1) {
+                countJOG++;
+            } else {
+                i = 5;
+            }
+            i++;
+        }
+        if (countJOG > maiorJOG) {
+            maiorJOG = countJOG;
+        }
     }
 
-    /////////////varrendo sudoeste//////////////////
-    i = linha;
-    j = coluna;
-    countJOG = 0;
-    countIA = 0;
-    while (i < 5 && j > 0) {
-        if (state.tabuleiro[i][j] == 1 && state.tabuleiro[i + 1][j - 1] == 1) {
-            countIA++;
-        }else{
-            countJOG++;
-        }
-        if (state.tabuleiro[i][j] == -1 && state.tabuleiro[i + 1][j - 1] == -1) {
-            countJOG++;
-        }
-        i++;
-        j--;
-    }
-    if (countJOG > maiorJOG) {
-        maiorJOG = countJOG;
-    }
-    if (countIA > maiorIA) {
-        maiorIA = countIA;
-    }
-
-    ///////////////////varrendo sul//////////////////
-    i = linha;
-    j = coluna;
-    countJOG = 0;
-    countIA = 0;
-    while (i < 5) {
-        if (state.tabuleiro[i][j] == 1 && state.tabuleiro[i + 1][j] == 1) {
-            countIA++;
-        }else{
-            countJOG++;
-        }
-        if (state.tabuleiro[i][j] == -1 && state.tabuleiro[i + 1][j] == -1) {
-            countJOG++;
-        }
-        i++;
-    }
-    if (countJOG > maiorJOG) {
-        maiorJOG = countJOG;
-    }
-    if (countIA > maiorIA) {
-        maiorIA = countIA;
-    }
-
-    ///////////////////varrendo sudeste//////////////////
-    i = linha;
-    j = coluna;
-    countJOG = 0;
-    countIA = 0;
-    while (i < 5 && j < 6) {
-        if (state.tabuleiro[i][j] == 1 && state.tabuleiro[i + 1][j + 1] == 1) {
-            countIA++;
-        }else{
-            countJOG++;
-        }
-        if (state.tabuleiro[i][j] == -1 && state.tabuleiro[i + 1][j + 1] == -1) {
-            countJOG++;
-        }
-        i++;
-        j++;
-    }
-    if (countJOG > maiorJOG) {
-        maiorJOG = countJOG;
-    }
-    if (countIA > maiorIA) {
-        maiorIA = countIA;
-    }
-
-    ///////////////////varrendo leste//////////////////
-    i = linha;
-    j = coluna;
-    countJOG = 0;
-    countIA = 0;
-    while (j < 6) {
-        if (state.tabuleiro[i][j] == 1 && state.tabuleiro[i][j + 1] == 1) {
-            countIA++;
-        }else{
-            countJOG++;
-        }
-        if (state.tabuleiro[i][j] == -1 && state.tabuleiro[i][j + 1] == -1) {
-            countJOG++;
-        }
-        j++;
-    }
-    if (countJOG > maiorJOG) {
-        maiorJOG = countJOG;
-    }
-    if (countIA > maiorIA) {
-        maiorIA = countIA;
-    }
-
-    ///////////////////varrendo nordeste//////////////////
-    i = linha;
-    j = coluna;
-    countJOG = 0;
-    countIA = 0;
-    while (i > 0 && j < 6) {
-        if (state.tabuleiro[i][j] == 1 && state.tabuleiro[i - 1][j + 1] == 1) {
-            countIA++;
-        }else{
-            countJOG++;
-        }
-        if (state.tabuleiro[i][j] == -1 && state.tabuleiro[i - 1][j + 1] == -1) {
-            countJOG++;
-        }
-        i--;
-        j++;
-    }
-    if (countJOG > maiorJOG) {
-        maiorJOG = countJOG;
-    }
-    if (countIA > maiorIA) {
-        maiorIA = countIA;
-    }
-
+    console.log("MAIORIA E MAIORJOG RESPECTIVAMENTE")
+    console.log(maiorIA)
+    console.log(maiorJOG)
     if (state.max) {
-        return maiorIA - maiorJOG;
+        return maiorIA;
     }
-    return -maiorJOG + maiorIA;
+    return -maiorJOG;
 };
 
 
 function finalizarJogo(vencedor) {
-    alert(`O jogador vencedor foi ${vencedor}`);
+    if (vencedor == 1) {
+        alert(`O jogador vencedor foi a máquina`);
+    } else {
+        alert(`O jogador vencedor foi o humano`);
+    }
+
 }
 
 
